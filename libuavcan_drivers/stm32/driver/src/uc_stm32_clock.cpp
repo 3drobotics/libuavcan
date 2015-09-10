@@ -355,8 +355,8 @@ void adjustUtc(uavcan::UtcDuration adjustment)
         if (!utc_locked)
         {
             utc_locked =
-                (std::abs(utc_rel_rate_ppm) < utc_sync_params.lock_thres_rate_ppm) &&
-                (std::abs(utc_prev_adj) < utc_sync_params.lock_thres_offset.toUSec());
+                (std::fabs(utc_rel_rate_ppm) < utc_sync_params.lock_thres_rate_ppm) &&
+                (std::fabs(utc_prev_adj) < utc_sync_params.lock_thres_offset.toUSec());
         }
     }
 }
@@ -444,7 +444,7 @@ UAVCAN_STM32_IRQ_HANDLER(TIMX_IRQHandler)
     {
         time_utc += USecPerOverflow;
         utc_accumulated_correction_nsec += utc_correction_nsec_per_overflow;
-        if (std::abs(utc_accumulated_correction_nsec) >= 1000)
+        if (std::fabs(utc_accumulated_correction_nsec) >= 1000)
         {
             time_utc = uavcan::uint64_t(uavcan::int64_t(time_utc) + utc_accumulated_correction_nsec / 1000);
             utc_accumulated_correction_nsec %= 1000;
